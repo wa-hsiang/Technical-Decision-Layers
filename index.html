@@ -1,0 +1,1761 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="九層技術決策知識的教學文件：每層講四到六個核心觀念，說明機制、附可自行驗證的例子，再說明它如何改變你的做法。">
+<meta name="color-scheme" content="light dark">
+<style>
+html,body{margin:0;padding:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>九層技術講義</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --paper:#FBFAFC;
+  --surface:#F2F0F6;
+  --surface-2:#FFFFFF;
+  --ink:#191521;
+  --ink-2:#4C4459;
+  --ink-3:#7B7288;
+  --line:#DCD7E4;
+  --line-2:#E9E5EF;
+  --accent:#5A3FA6;
+  --accent-soft:#EFEAFA;
+  --eg:#0B6350;
+  --eg-soft:#E8F3F0;
+  --warn:#A4382A;
+  --warn-soft:#FAECE9;
+
+  --serif:"Newsreader","Songti TC","Noto Serif CJK TC","Source Han Serif TC","Songti SC",serif;
+  --sans:"Libre Franklin","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  --mono:"IBM Plex Mono","PingFang TC",ui-monospace,monospace;
+
+  color-scheme:light;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121016;
+    --surface:#1B1823;
+    --surface-2:#221E2C;
+    --ink:#E9E5EF;
+    --ink-2:#A79DB8;
+    --ink-3:#7C7389;
+    --line:#302B3C;
+    --line-2:#282331;
+    --accent:#A98FE8;
+    --accent-soft:#241D38;
+    --eg:#5FC3AC;
+    --eg-soft:#132B26;
+    --warn:#E0836F;
+    --warn-soft:#301A16;
+    color-scheme:dark;
+  }
+}
+
+:root[data-theme="dark"]{
+  --paper:#121016;
+  --surface:#1B1823;
+  --surface-2:#221E2C;
+  --ink:#E9E5EF;
+  --ink-2:#A79DB8;
+  --ink-3:#7C7389;
+  --line:#302B3C;
+  --line-2:#282331;
+  --accent:#A98FE8;
+  --accent-soft:#241D38;
+  --eg:#5FC3AC;
+  --eg-soft:#132B26;
+  --warn:#E0836F;
+  --warn-soft:#301A16;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.82;
+  -webkit-font-smoothing:antialiased;
+}
+
+.shell{
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 22px 100px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:1080px){
+  .shell{grid-template-columns:196px minmax(0,1fr);gap:56px;padding:0 36px 130px}
+}
+
+/* ---------- masthead ---------- */
+
+.masthead{grid-column:1/-1;padding:60px 0 34px}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 16px;
+}
+h1{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:clamp(2.3rem,5.6vw,3.5rem);
+  line-height:1.1;
+  letter-spacing:-.01em;
+  margin:0 0 22px;
+  text-wrap:balance;
+}
+.lede{
+  font-size:17.5px;
+  line-height:1.78;
+  color:var(--ink-2);
+  max-width:40em;
+  margin:0 0 14px;
+}
+.lede strong{color:var(--ink);font-weight:600}
+.howto{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:18px 0;
+  margin:30px 0 0;
+  max-width:40em;
+  font-size:14.5px;
+  color:var(--ink-2);
+  line-height:1.72;
+}
+.howto p{margin:0 0 9px}
+.howto p:last-child{margin:0}
+.howto b{color:var(--ink)}
+
+/* ---------- nav ---------- */
+
+.nav{display:none}
+@media (min-width:1080px){
+  .nav{
+    display:block;
+    position:sticky;
+    top:0;
+    align-self:start;
+    max-height:100vh;
+    overflow-y:auto;
+    padding:14px 0 40px;
+  }
+}
+.nav-h{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0 0 12px;
+}
+.nav a{
+  display:block;
+  padding:5px 0;
+  color:var(--ink-2);
+  text-decoration:none;
+  font-size:13.5px;
+  line-height:1.4;
+  border-bottom:1px solid var(--line-2);
+}
+.nav a span{
+  font-family:var(--mono);
+  font-size:10.5px;
+  color:var(--accent);
+  display:inline-block;
+  width:24px;
+}
+.nav a:hover{color:var(--accent)}
+.nav a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- chapters ---------- */
+
+.main{grid-column:1/-1;min-width:0}
+@media (min-width:1080px){.main{grid-column:2}}
+
+.ch{
+  padding:52px 0 0;
+  scroll-margin-top:14px;
+}
+.ch + .ch{border-top:1px solid var(--line)}
+
+.ch-head{margin:0 0 30px;max-width:40em}
+.ch-num{
+  font-family:var(--mono);
+  font-size:11.5px;
+  font-weight:500;
+  letter-spacing:.14em;
+  color:var(--accent);
+  margin:0 0 10px;
+}
+.ch h2{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:clamp(1.7rem,3.6vw,2.3rem);
+  line-height:1.2;
+  letter-spacing:-.01em;
+  margin:0 0 12px;
+  text-wrap:balance;
+}
+.ch-sub{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:18px;
+  line-height:1.6;
+  color:var(--ink-2);
+  margin:0;
+}
+
+h3{
+  font-family:var(--mono);
+  font-size:10.5px;
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0 0 12px;
+}
+
+.why,.what{max-width:40em;margin:0 0 28px}
+.why p,.what p{margin:0 0 12px;font-size:15.5px;line-height:1.8}
+.why p:last-child{margin:0}
+.why strong{font-weight:600}
+
+.topics{margin:0;padding:0;list-style:none;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.topics li{background:var(--surface-2);padding:9px 14px;font-size:14.5px;line-height:1.6}
+.topics li b{font-weight:600}
+.topics li em{
+  font-style:normal;
+  font-family:var(--mono);
+  font-size:11.5px;
+  color:var(--ink-3);
+  letter-spacing:.01em;
+}
+
+.core-head{
+  margin:44px 0 0;
+  padding:0 0 8px;
+  border-bottom:2px solid var(--ink);
+  max-width:40em;
+  color:var(--ink);
+}
+
+.idea{max-width:40em;padding:26px 0 0}
+.idea h4{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:1.32rem;
+  line-height:1.4;
+  letter-spacing:-.005em;
+  margin:0 0 12px;
+  display:flex;
+  gap:12px;
+  align-items:baseline;
+  text-wrap:balance;
+}
+.idx{
+  font-family:var(--mono);
+  font-size:12px;
+  font-weight:500;
+  color:var(--accent);
+  border:1px solid var(--accent);
+  width:22px;
+  height:22px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+  transform:translateY(-1px);
+}
+.idea p{margin:0 0 13px;line-height:1.82}
+.idea p:last-child{margin:0}
+.idea strong{font-weight:600}
+.en{
+  font-family:var(--mono);
+  font-size:.82em;
+  color:var(--ink-3);
+  letter-spacing:.01em;
+  white-space:nowrap;
+}
+
+.eg{
+  border-left:2px solid var(--eg);
+  background:var(--eg-soft);
+  padding:14px 16px;
+  margin:0 0 14px;
+  font-size:14.5px;
+  line-height:1.72;
+}
+.eg-l{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--eg);
+  display:block;
+  margin:0 0 8px;
+}
+.eg p{margin:0 0 8px}
+.eg p:last-child{margin:0}
+.eg pre{
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.62;
+  margin:0 0 8px;
+  overflow-x:auto;
+  white-space:pre;
+}
+.eg pre:last-child{margin:0}
+
+.so{
+  border-top:1px solid var(--line);
+  padding-top:11px;
+  font-size:15px;
+}
+.so>span{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-right:9px;
+}
+
+code{
+  font-family:var(--mono);
+  font-size:.88em;
+  background:var(--surface);
+  border:1px solid var(--line-2);
+  padding:.06em .32em;
+  border-radius:2px;
+  white-space:nowrap;
+}
+.eg code{background:transparent;border:none;padding:0;white-space:pre-wrap}
+
+.tw{overflow-x:auto;margin:0 0 14px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:340px;font-size:14px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+thead th{
+  font-family:var(--mono);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  background:var(--surface);
+  white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td.m,th.m{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.tw.mini table{min-width:0}
+
+.warn{
+  border-left:2px solid var(--warn);
+  background:var(--warn-soft);
+  padding:12px 15px;
+  margin:0 0 14px;
+  font-size:14.5px;
+  line-height:1.7;
+}
+.warn b{color:var(--warn)}
+
+.next{
+  max-width:40em;
+  margin:40px 0 0;
+  border-top:1px solid var(--line);
+  padding:20px 0 0;
+}
+.next dl{margin:0}
+.next dt{
+  font-family:var(--mono);
+  font-size:10.5px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0 0 5px;
+}
+.next dd{margin:0 0 15px;font-size:14.5px;line-height:1.74}
+.next dd:last-child{margin:0}
+.kw{
+  font-family:var(--mono);
+  font-size:12.5px;
+  color:var(--accent);
+  line-height:2;
+}
+
+.closing{
+  max-width:40em;
+  margin:70px 0 0;
+  border-top:2px solid var(--ink);
+  padding:24px 0 0;
+  font-size:15px;
+  color:var(--ink-2);
+  line-height:1.8;
+}
+.closing h2{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:1.4rem;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.closing p{margin:0 0 13px}
+.closing strong{color:var(--ink);font-weight:600}
+
+a.top{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.1em;
+  color:var(--ink-3);
+  text-decoration:none;
+  border-bottom:1px solid var(--line);
+}
+a.top:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="masthead" id="top">
+  <p class="eyebrow">九層 · 技術決策層講義</p>
+  <h1>九層技術講義</h1>
+  <p class="lede">寫程式與規劃之間有一層技術知識，決定<strong>資料該長什麼形狀、東西會怎麼壞、金鑰放在哪裡、排程為什麼跑在錯的時刻</strong>。它不要求你能親手寫出實作，但要求你能判斷、能決定、能在壞掉時定位。</p>
+  <p class="lede">這份講義把那一層分成九塊，每塊講四到六個核心觀念。<strong>每個觀念都白話說明機制、給一個能自己驗證的例子、再說明它如何改變你的做法。</strong></p>
+  <div class="howto">
+    <p><b>怎麼讀。</b>一次讀一層就好。「要學什麼」是那一層的題目清單，「核心觀念」是可以直接吸收的部分——讀完就知道了，不必再去別處查。</p>
+    <p><b>術語都附英文。</b>因為延伸學習幾乎只能靠英文關鍵字搜到有用的東西。括號裡的英文可以直接拿去查。</p>
+    <p><b>層號是位置，不是難度。</b>編號標示的是「這件事發生在系統的哪個位置」，從最底層的執行環境到最上層的觀測。</p>
+  </div>
+</header>
+
+<nav class="nav" aria-label="章節">
+  <p class="nav-h">九層</p>
+  <a href="#l1"><span>L1</span>執行環境與命令列</a>
+  <a href="#l2"><span>L2</span>版控的資料模型</a>
+  <a href="#l3"><span>L3</span>依賴與環境重現</a>
+  <a href="#l4"><span>L4</span>關聯資料庫的機制</a>
+  <a href="#l5"><span>L5</span>資料源與網路協定</a>
+  <a href="#l6"><span>L6</span>程序、排程與並發</a>
+  <a href="#l7"><span>L7</span>部署與拓撲</a>
+  <a href="#l8"><span>L8</span>身分、秘密與權限</a>
+  <a href="#l9"><span>L9</span>觀測與除錯</a>
+</nav>
+
+<main class="main">
+
+<!-- ═══════════════ L1 ═══════════════ -->
+<article class="ch" id="l1">
+  <header class="ch-head">
+    <p class="ch-num">L1</p>
+    <h2>執行環境與命令列</h2>
+    <p class="ch-sub">一個指令跑起來時，實際發生了什麼。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>其他八層的錯誤訊息，全部要經過這一層才讀得懂。缺了它，你會把「環境沒對」誤判成「程式有錯」，然後花好幾個小時修一段本來沒問題的程式碼。</p>
+    <p>它也是唯一能解釋這三種常見困境的一層：<strong>套件明明裝了卻找不到</strong>、<strong>日誌裡什麼都沒有</strong>、<strong>服務說啟動成功但外面連不到</strong>。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>搜尋路徑</b>——同名指令跑到哪一個 <em>PATH resolution</em></li>
+      <li><b>程序的環境</b>——環境變數怎麼傳、傳給誰 <em>process environment</em></li>
+      <li><b>結束碼與訊號</b>——程式最後說的那句話 <em>exit code, signal</em></li>
+      <li><b>兩條輸出管線與緩衝</b>——為什麼日誌會消失 <em>stdout/stderr, buffering</em></li>
+      <li><b>綁定位址與端口</b>——誰連得到你 <em>bind address, port</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>搜尋路徑：為什麼「裝了卻找不到」</h4>
+    <p>你在終端機打 <code>python3</code> 時，系統並不知道你指的是哪一個檔案。它拿環境變數 <code>PATH</code> 裡列的目錄，<strong>從左到右一個個找，第一個找到的就用</strong>，找到就不再往下看。</p>
+    <p>虛擬環境（<span class="en">virtual environment</span>）的全部魔法就是這件事：它把自己的目錄插到 <code>PATH</code> 最前面。所以「啟用虛擬環境」不是什麼複雜機制，只是改了搜尋順序。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>$ echo $PATH
+/Users/me/.venv/bin:/usr/local/bin:/usr/bin:/bin
+
+$ command -v python3
+/Users/me/.venv/bin/python3      ← 命中的是這個
+
+$ /usr/bin/python3 -c "import openpyxl"   ← 這個裝了
+$ python3 -c "import openpyxl"            ← 這個沒裝 → ModuleNotFoundError</pre>
+      <p>同一台機器、同一個指令名稱、兩個不同的程式。「套件沒裝」這個訊息是真的——只是它講的是另一個 Python。</p>
+    </div>
+    <p class="so"><span>所以</span>看到「找不到模組」時，第一個動作是 <code>command -v python3</code>（或在 Python 裡印 <code>sys.executable</code>），確認你問的是哪一個。先確認位置，再決定要不要安裝。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>環境變數是每個程序自己的一份影本</h4>
+    <p>環境變數不是全域設定。程序啟動的那一刻，系統給它一份<strong>影本</strong>；它之後生的子程序再繼承一份影本。所以：你在終端機 <code>export</code> 的東西，只影響<strong>之後</strong>從這個終端機啟動的程序，對已經在跑的程序完全沒有影響，對別的終端機也沒有影響。</p>
+    <p>這解釋了一個常見的困惑：「我明明設了那個變數。」你設在你的終端機那一份裡；服務被平台啟動時拿到的是平台給的另一份。兩份毫無關係。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>同一個變數有四份互不相干的來源，缺哪一份就在哪一層失效：</p>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>來源</th><th>誰看得到</th></tr></thead>
+          <tbody>
+            <tr><td class="m">export FOO=1</td><td>這個終端機之後啟動的程序</td></tr>
+            <tr><td class="m">.env 檔</td><td>只有主動去讀它的程式（系統本身不認識這個檔）</td></tr>
+            <tr><td>平台的服務變數</td><td>平台啟動的那個服務</td></tr>
+            <tr><td>排程／容器的設定</td><td>那個任務的那一次執行</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>.env</code> 這一列特別容易誤解：作業系統完全不知道有這個檔案，是你的程式用套件去讀它、再塞進自己的環境裡。所以在別的執行方式下它可能根本沒被讀到。</p>
+    </div>
+    <p class="so"><span>所以</span>「變數沒生效」要問的是「這一份是誰給的」，不是「我是不是打錯了」。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>結束碼：程式最後說的那句話</h4>
+    <p>程序結束時會留下一個 0 到 255 的數字。<code>0</code> 代表成功，非 0 代表失敗——這是唯一一句所有工具都聽得懂的話。自動重啟策略、排程器的成敗判斷、<code>&amp;&amp;</code> 要不要接著跑，全都只讀這個數字。</p>
+    <p>如果程序是被訊號（<span class="en">signal</span>）殺掉的，結束碼是 <code>128 + 訊號編號</code>。這幾個數字沒有道理可推，只能認得：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th class="m">碼</th><th>意思</th><th>通常代表</th></tr></thead>
+          <tbody>
+            <tr><td class="m">0</td><td>正常結束</td><td>成功</td></tr>
+            <tr><td class="m">1</td><td>一般錯誤</td><td>程式自己回報失敗</td></tr>
+            <tr><td class="m">130</td><td>128+2 中斷</td><td>你按了 Ctrl-C</td></tr>
+            <tr><td class="m">137</td><td>128+9 強制終止</td><td><strong>記憶體用盡被系統殺掉</strong></td></tr>
+            <tr><td class="m">139</td><td>128+11 記憶體區段錯誤</td><td><strong>原生程式碼崩潰</strong></td></tr>
+            <tr><td class="m">143</td><td>128+15 終止請求</td><td>平台要它關機（部署、縮容）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre>$ ./my_script.sh
+$ echo $?          ← 讀上一個指令的結束碼
+137                ← 不是程式邏輯錯，是記憶體不夠</pre>
+    </div>
+    <p class="so"><span>所以</span>看到 <code>137</code> 不要去讀程式碼，去看記憶體上限；看到 <code>139</code> 往原生擴充套件那邊想。而如果你的程式把錯誤攔下來、印一行訊息、然後正常結束——它的結束碼是 0，<strong>平台會認為它成功了，重啟策略不會救它</strong>。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>兩條輸出管線，以及日誌為什麼會消失</h4>
+    <p>程序有兩條獨立的輸出管線：<strong>標準輸出</strong>（<span class="en">stdout</span>，正常結果）和<strong>標準錯誤</strong>（<span class="en">stderr</span>，錯誤訊息）。<code>&gt;</code> 只導走前者，所以「我把輸出存到檔案了但錯誤訊息不在裡面」是正常行為，要 <code>2&gt;&amp;1</code> 才會併進去。</p>
+    <p>更常咬人的是<strong>緩衝</strong>（<span class="en">buffering</span>）。輸出接到終端機時是「寫一行就送出一行」；但接到管線或檔案時（也就是所有部署環境），系統會改成<strong>攢滿幾千位元組才送一次</strong>。後果是：日誌延遲很久才出現，而<strong>程式崩潰時還沒送出的那一批直接消失</strong>——你會看到一個沒有任何線索的當機。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre># 崩潰前的日誌不見了，因為還在緩衝區裡
+python worker.py > out.log
+
+# 關掉緩衝，每一行立刻送出
+python -u worker.py > out.log
+# 或設環境變數（容器裡的標準做法）
+PYTHONUNBUFFERED=1</pre>
+    </div>
+    <p class="so"><span>所以</span>任何跑在容器或排程裡的程式，都要關掉輸出緩衝。「崩潰前完全沒有日誌」這個症狀，八成不是程式沒印，是印了但沒送出去。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">5</span>綁定位址：0.0.0.0 與 127.0.0.1 的差別</h4>
+    <p>一台機器有多張網路介面（<span class="en">network interface</span>）。其中一張叫<strong>迴環</strong>（<span class="en">loopback</span>），位址是 <code>127.0.0.1</code>，它的流量永遠不離開這台機器。</p>
+    <p>服務啟動時要選擇「聽哪一張」。綁 <code>127.0.0.1</code> 表示只接受本機的連線；綁 <code>0.0.0.0</code> 表示<strong>所有介面都聽</strong>。兩者都會讓服務正常啟動、日誌顯示成功——差別只在外面連不連得到。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>容器有自己的一組網路介面，包含自己的迴環。所以容器裡綁 <code>127.0.0.1</code> 意思是「只有這個容器裡面連得到」，即使你把端口正確映射出來也一樣連不到。</p>
+      <pre># 本機開發沒問題，部署後連不到
+app.run(host="127.0.0.1", port=8000)
+
+# 容器 / 雲端的正確寫法
+app.run(host="0.0.0.0", port=int(os.environ["PORT"]))</pre>
+    </div>
+    <p class="so"><span>所以</span>「啟動成功但連不到」先看兩件事：綁定位址是不是 <code>0.0.0.0</code>，端口是不是用平台注入的那一個。這兩個錯誤都不會產生任何錯誤訊息。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">PATH resolution · process environment · exit status · signal(7) · stdio buffering · loopback interface · bind address</dd>
+      <dt>手邊就有的資料</dt>
+      <dd>你的機器上有完整說明書：<code>man bash</code> 裡的 <b>REDIRECTION</b> 與 <b>EXIT STATUS</b> 兩節、<code>man 7 signal</code> 的訊號編號表。這兩份比大部分教學文章精確。</dd>
+      <dt>動手方向</dt>
+      <dd>寫一個馬上結束的小腳本，讓它分別正常結束、以錯誤碼結束、被強制殺掉，每次讀 <code>$?</code>。再把同一個腳本的輸出導進檔案，比較有沒有加關閉緩衝的差別。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L2 ═══════════════ -->
+<article class="ch" id="l2">
+  <header class="ch-head">
+    <p class="ch-num">L2</p>
+    <h2>版控的資料模型</h2>
+    <p class="ch-sub">你的檔案在時間軸上的狀態，以及誰拿得到什麼。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>大部分人會用五、六個版控指令，但不知道它們在動什麼。結果是：出狀況時不敢動手，因為不知道哪個操作會弄丟東西；以及一個更嚴重的後果——<strong>把秘密提交進去之後，用錯誤的方式「刪掉」它，以為安全了。</strong></p>
+    <p>這一層需要的知識量最少，但誤解的代價最高。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>它到底存了什麼</b>——內容尋址的快照 <em>content-addressed objects</em></li>
+      <li><b>分支與 HEAD</b>——為什麼分支很便宜 <em>ref, pointer</em></li>
+      <li><b>三個區域</b>——工作區、索引、提交 <em>working tree, index, HEAD</em></li>
+      <li><b>忽略清單的作用範圍</b>——它管不到什麼 <em>gitignore, tracked files</em></li>
+      <li><b>歷史的不可變性</b>——與秘密輪替 <em>immutability, secret rotation</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>Git 存的是完整快照，用內容當名字</h4>
+    <p>直覺會以為版控存的是「每次改了哪幾行」。實際上它存的是<strong>完整快照</strong>：每次提交都記錄「這一刻所有檔案長什麼樣」。差異是顯示時才算出來的。</p>
+    <p>而每個物件的名字，是它<strong>內容的雜湊值</strong>（<span class="en">hash</span>）。兩個內容一樣的檔案，會是同一個物件，只存一份——這是為什麼存完整快照不會爆掉。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>三種物件就構成整個系統：</p>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>物件</th><th>內容</th></tr></thead>
+          <tbody>
+            <tr><td class="m">blob</td><td>一個檔案的內容（不含檔名）</td></tr>
+            <tr><td class="m">tree</td><td>一個目錄：檔名 → blob 或 tree 的對應</td></tr>
+            <tr><td class="m">commit</td><td>一個 tree ＋ 上一個 commit ＋ 作者、時間、訊息</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>提交的雜湊值涵蓋了「內容＋上一個提交」。所以<strong>改動任何一個舊提交，它之後的每一個提交的名字都會變</strong>——歷史在結構上就無法被就地修改。</p>
+    </div>
+    <p class="so"><span>所以</span>「修改歷史」實際上是「重建一條新歷史」。任何人手上的舊複本、任何備份、任何分支，都還帶著原本那一份。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>分支只是一個裝著雜湊值的檔案</h4>
+    <p>分支（<span class="en">branch</span>）不是一份程式碼的複本。它是一個小檔案，裡面只有一個提交的雜湊值。<code>HEAD</code> 則是另一個指標，指向「你現在在哪個分支上」。</p>
+    <p>這解釋了兩件事：為什麼開分支、切分支幾乎不花時間（只是改一個指標）；以及為什麼<strong>刪掉分支不等於刪掉提交</strong>——那些提交還在，只是沒有指標指著它們，所以你找不到。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>.git/refs/heads/main   ← 檔案內容就一行雜湊值
+.git/HEAD              ← 內容：ref: refs/heads/main</pre>
+      <p>「提交之後才發現弄錯了」通常救得回來，因為那個提交物件還在，只要找到它的雜湊值就能把指標指回去（<code>git reflog</code> 記著你最近去過哪些地方）。</p>
+    </div>
+    <p class="so"><span>所以</span>版控裡最難救回來的，不是「提交錯了」，而是<strong>從來沒提交過的東西</strong>——它不是任何物件，只是硬碟上的檔案。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>三個區域，兩次搬運</h4>
+    <p>同一份檔案，在三個地方各有一份狀態：<strong>工作區</strong>（你正在編輯的）、<strong>索引</strong>（<span class="en">index</span>／暫存區，下次要提交的內容）、<strong>最近一次提交</strong>。<code>add</code> 把工作區搬到索引，<code>commit</code> 把索引變成新提交。</p>
+    <p>知道這件事最直接的好處，是看得懂狀態輸出的<strong>兩欄</strong>——很多人以為那些字母是隨機的：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>$ git status --short
+M  db.py        ← 左欄有字：已加入索引，會被提交
+ M app.py       ← 右欄有字：改了但沒加入，不會被提交
+MM notify.py    ← 兩欄都有：加入了，之後又改了（提交的是加入時那版）
+?? alerts.py    ← 完全沒被追蹤過</pre>
+      <p>左欄＝索引與提交的差異，右欄＝工作區與索引的差異。<code>MM</code> 那一行是最容易出錯的情況：你以為提交的是現在看到的版本，其實是你 <code>add</code> 那一刻的版本。</p>
+    </div>
+    <p class="so"><span>所以</span>提交前掃一眼狀態輸出的右欄。右欄有字的檔案，是你以為會進去、但不會進去的東西。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>秘密一旦進了歷史，就只能輪替</h4>
+    <p>忽略清單（<code>.gitignore</code>）<strong>只對「從未被追蹤過」的檔案有效</strong>。一個檔案只要被提交過一次，它就進入追蹤狀態，之後把它加進忽略清單完全沒有作用——它會繼續被追蹤，而且歷史裡那一份永遠都在。</p>
+    <p>就算你用改寫歷史的工具把它從所有提交裡挖掉，也只是在你這一份倉庫成立。任何已經取得過的複本、任何分支、任何備份、任何自動掃描服務的紀錄裡，那個值都還在。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>正確的處置順序，第一步和最後一步不能顛倒：</p>
+      <pre>1. 先輪替那個秘密        ← 讓歷史裡那一份失效，這是唯一真正有效的動作
+2. 停止追蹤該檔案        git rm --cached .env
+3. 加進忽略清單          echo ".env" >> .gitignore
+4. （選擇性）改寫歷史    只是清理，不是修補</pre>
+    </div>
+    <p class="so"><span>所以</span>發現秘密進了版控，第一個動作是去把那把金鑰換掉，不是去研究怎麼刪檔案。刪檔案不會讓已經洩漏的憑證失效。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">git object model · content-addressed storage · git index · reflog · gitignore tracked files · secret rotation · git filter-repo</dd>
+      <dt>值得讀的東西</dt>
+      <dd>《Pro Git》（作者 Scott Chacon，官方免費電子書）的第 10 章「Git Internals」。它從物件模型講起，讀完會發現指令都變得可預測。前面九章可以跳過。</dd>
+      <dt>動手方向</dt>
+      <dd>在一個丟得掉的測試倉庫裡提交一個假秘密，用你以為可行的方式「移除」它，再去歷史裡把那個值找出來。找得到就對了。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L3 ═══════════════ -->
+<article class="ch" id="l3">
+  <header class="ch-head">
+    <p class="ch-num">L3</p>
+    <h2>依賴與環境重現</h2>
+    <p class="ch-sub">程式跑起來時，它身邊有哪些別人寫的東西。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>這一層負責解答「本機正常、部署失敗」這一整類問題。缺了它，你會反覆去改一段其實沒問題的程式，而真正的差異在兩邊裝出來的東西不一樣。</p>
+    <p>它也解釋了一個特別惡劣的現象：<strong>首頁完全正常，但某個功能一按就掛掉</strong>——而且只在部署後發生。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>模組怎麼被找到</b>——搜尋順序 <em>sys.path, module resolution</em></li>
+      <li><b>三種相依身分</b>——直接、間接、選用 <em>direct, transitive, optional</em></li>
+      <li><b>延遲載入</b>——為什麼錯誤會晚到 <em>lazy import</em></li>
+      <li><b>宣告與鎖定</b>——版本語意與可重現 <em>semver, lock file</em></li>
+      <li><b>預編譯與原生擴充</b>——無訊息崩潰的來源 <em>wheel, C extension</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>模組的搜尋順序，和指令一樣是「第一個命中的贏」</h4>
+    <p>Python 執行 <code>import requests</code> 時，會按 <code>sys.path</code> 這個清單的順序找，第一個找到的就用。清單的順序大致是：<strong>腳本所在目錄</strong> → <code>PYTHONPATH</code> 指定的目錄 → <strong>這個解譯器自己的套件目錄</strong>。</p>
+    <p>注意最後一項：套件目錄是<strong>綁在解譯器身上</strong>的，不是綁在專案身上。所以「哪個 Python」決定了「哪一套套件」——這就是虛擬環境的原理，它有自己的解譯器與自己的套件目錄。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>診斷「明明裝了卻找不到」，兩行就夠：</p>
+      <pre>$ python3 -c "import sys; print(sys.executable)"
+/Users/me/.venv/bin/python3        ← 現在用的是這個解譯器
+
+$ python3 -c "import sys; print(*sys.path, sep='\n')"
+/Users/me/proj                    ← 腳本目錄（第一優先，會蓋掉同名套件）
+/Users/me/.venv/lib/python3.11/site-packages   ← 套件在這裡找</pre>
+      <p>第一項還帶來一個陷阱：如果你的檔案叫 <code>requests.py</code>，<code>import requests</code> 會匯入你自己那個檔案，而不是套件——而錯誤訊息會是某個看起來毫無關係的屬性不存在。</p>
+    </div>
+    <p class="so"><span>所以</span>先印 <code>sys.executable</code>，再考慮安裝。以及不要把自己的檔案取成跟套件一樣的名字。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>三種相依身分，第三種是部署地雷</h4>
+    <p><strong>直接相依</strong>是你在程式裡明確引入的。<strong>間接相依</strong>（<span class="en">transitive</span>）是那些套件自己需要的東西——你不會列它，但它會被一起裝上。</p>
+    <p><strong>選用相依</strong>（<span class="en">optional dependency</span>）是第三種，也是麻煩的來源：某個套件只在你用到它的<strong>某個特定功能</strong>時才需要另一個套件，而它沒有把那個套件列為硬性需求。安裝時一切正常、啟動時一切正常，只有走到那條路徑才炸。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>為什麼它只在特定路徑炸？因為引入語句寫在函式裡面，而不是檔案開頭——這叫<strong>延遲載入</strong>（<span class="en">lazy import</span>）：</p>
+      <pre># 某個套件內部的寫法
+def start_login_flow():
+    import httpx            ← 執行到這一行才去找它
+    ...
+
+# 於是：
+#   安裝    → 成功（沒人檢查 httpx）
+#   啟動    → 成功（沒執行到這個函式）
+#   首頁    → 成功
+#   點登入  → 500，ImportError</pre>
+    </div>
+    <p class="so"><span>所以</span>「部署後某個功能才壞」要先懷疑選用相依，而不是懷疑那個功能的邏輯。也因此：<strong>驗證部署不能只開首頁，要把每一條路徑實際走一次</strong>——沒被走過的路徑等於沒被驗證。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>宣告檔說「我要什麼」，鎖定檔說「實際裝了什麼」</h4>
+    <p>版本號通常是三段：<strong>主版本．次版本．修補</strong>（<span class="en">major.minor.patch</span>）。約定是——修補只修錯誤，次版本加功能但不破壞既有用法，主版本可以破壞。這個約定叫語意化版本（<span class="en">semantic versioning</span>），是慣例而非保證。</p>
+    <p>所以 <code>&gt;=2.0</code> 這種寫法意思是「2.0 以上都行，包含未來的 3.0」——它換到自動修補，代價是<strong>同一份宣告在不同時間會裝出不同的東西</strong>。三個月後重建環境，行為可能就變了，而你的宣告檔一個字都沒改。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>檔案</th><th>記錄什麼</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td class="m">requirements.txt</td><td>我要求的（可能是範圍）</td><td>宣告意圖</td></tr>
+            <tr><td class="m">requirements.lock<br>poetry.lock / uv.lock</td><td>實際解析出的<strong>完整</strong>清單，含所有間接相依的確切版本</td><td>重現環境</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre># 想知道現在到底裝了什麼
+$ pip freeze
+# 兩邊行為不同時，比對的應該是這份輸出，不是宣告檔</pre>
+    </div>
+    <p class="so"><span>所以</span>「本機好、上線壞」的第一個動作是比對兩邊的 <code>pip freeze</code>。而如果你需要「三個月後還跑得出一樣的結果」，就要有鎖定檔，不能只有宣告檔。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>原生擴充：崩潰時沒有 Python 的錯誤訊息</h4>
+    <p>有些套件的核心是用 C 寫的，安裝時直接下載預編譯好的檔案（叫<strong>輪子</strong>／<span class="en">wheel</span>），而不是在你的機器上編譯。它們通常快得多。</p>
+    <p>代價是：<strong>C 那一層崩潰時，不會產生 Python 的錯誤堆疊</strong>。你看到的是程序直接消失、結束碼 139，什麼線索都沒有。常見的觸發條件是多執行緒環境——同一個套件單獨執行時很穩，放進多執行緒的服務裡就偶發性崩潰。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>許多套件同時提供兩種版本，選擇是有理由的：</p>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>版本</th><th>特性</th><th>適合</th></tr></thead>
+          <tbody>
+            <tr><td>原生擴充版</td><td>快；可能與特殊執行環境衝突</td><td>單獨執行的批次工作</td></tr>
+            <tr><td>純 Python 版</td><td>慢一些；行為可預測</td><td>多執行緒的常駐服務</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>同一個專案在兩處用同一功能的兩種版本，是正確設計，不是妥協。</p>
+    </div>
+    <p class="so"><span>所以</span>「沒有錯誤訊息就死掉」不要繼續在 Python 程式碼裡找原因。往這個方向想：是不是有原生擴充，換成純 Python 版還會不會發生。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">sys.path · module shadowing · transitive dependency · optional dependency · lazy import · semantic versioning · lock file · dependency pinning · python wheel · C extension GIL</dd>
+      <dt>值得讀的東西</dt>
+      <dd>Python 官方文件的 <b>Modules → The Module Search Path</b> 一節（很短，但把搜尋順序講死了）。以及你用的套件管理工具自己的「lock」章節——每個工具的鎖定機制不同，這裡不能靠通論。</dd>
+      <dt>動手方向</dt>
+      <dd>建一個乾淨環境，只裝宣告檔裡的東西，然後把程式的每一條主要路徑都實際走一次：登入、送出、匯出、下載。記下哪一條先炸——那就是宣告檔和執行期需求之間的落差。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L4 ═══════════════ -->
+<article class="ch" id="l4">
+  <header class="ch-head">
+    <p class="ch-num">L4</p>
+    <h2>關聯資料庫的機制</h2>
+    <p class="ch-sub">資料該長什麼形狀，以及誰負責把錯的資料擋在門外。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>這一層決定系統的形狀，而形狀是最貴的東西——程式錯了改一天，資料模型錯了改一個月，而且那段時間累積的資料可能已經不可信。</p>
+    <p>它也是唯一能防住這一類故障的一層：<strong>畫面完全正常，但數字是錯的</strong>。這種錯不會報錯、不會有例外、不會有任何跡象，只會在某天對帳時發現，然後你無法回推是哪一天開始錯的。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>事實、參數、推導值</b>——什麼該存、什麼不該存 <em>derived data</em></li>
+      <li><b>約束</b>——把規則交給資料庫 <em>constraint, NOT NULL, UNIQUE, CHECK, FK</em></li>
+      <li><b>空值的三值邏輯</b>——NULL 不是 0 <em>three-valued logic</em></li>
+      <li><b>浮點與定點</b>——金額為什麼不能用浮點 <em>IEEE 754, NUMERIC</em></li>
+      <li><b>交易與隔離</b>——全有或全無 <em>transaction, ACID, isolation level</em></li>
+      <li><b>索引</b>——為什麼快、什麼時候不管用 <em>B-tree, leftmost prefix</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>三分法：事實、參數、推導值</h4>
+    <p>資料庫裡的每個欄位都屬於三類之一：</p>
+    <p><strong>事實</strong>是發生過的事——一筆交易、一次點擊、一個公布的數字。它已經發生了，所以不該被修改。<strong>參數</strong>是你的設定——門檻、比例、開關。它會改，但每次改都該留下痕跡。<strong>推導值</strong>是從前兩者算出來的——平均、總和、報酬率、狀態。</p>
+    <p>關鍵規則是：<strong>推導值不要存。</strong>因為它會和來源不同步，而且不同步時沒有任何機制會通知你。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>假設你把「平均成本」存成一個欄位。某天你補記一筆漏掉的早期交易：</p>
+      <pre>交易表   ← 多了一筆（正確）
+均價欄位 ← 沒有人去改它（錯了）
+畫面     ← 顯示一個看起來很合理的數字（錯得很安靜）</pre>
+      <p>之後所有依賴均價的數字全部錯，而系統一次錯誤訊息都不會給你。</p>
+      <p>合法的中間解有兩種，但兩種都是「明確宣告它是推導出來的」：<strong>視圖</strong>（<span class="en">view</span>，每次查詢重算）；或<strong>產生欄位</strong>（<span class="en">generated column</span>，由資料庫自己維護，你無法手動寫入）。真的需要為效能落地時，用<strong>物化視圖</strong>（<span class="en">materialized view</span>）並排定重算，而不是手寫一個誰都能改的普通欄位。</p>
+    </div>
+    <p class="so"><span>所以</span>拿到任何一張表，逐欄問「這是事實、參數，還是推導值」。看到推導值被存成普通欄位，就是找到一個未來的靜默錯誤。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>約束：讓錯誤在寫入的那一刻發生</h4>
+    <p>約束（<span class="en">constraint</span>）是你在建表時宣告的規則，資料庫會強制執行。它的價值不在「幫你檢查」——你自己也能在程式裡檢查。價值在於：<strong>它讓錯誤發生在寫入那一刻，而不是幾個月後在報表上。</strong></p>
+    <p>而且它擋得住你想不到的路徑：批次匯入、修補腳本、別人直接連資料庫改。程式裡的檢查只保護程式這一條路。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="m">約束</th><th>擋住什麼</th><th>不設會發生的事</th></tr></thead>
+          <tbody>
+            <tr><td class="m">NOT NULL</td><td>這個欄位不能沒有值</td><td>時間戳為空的那筆資料，讓「最新的一筆」永遠停在某一刻且不報錯</td></tr>
+            <tr><td class="m">UNIQUE</td><td>這個值不能重複</td><td>同一件事被記兩次，統計全部翻倍</td></tr>
+            <tr><td class="m">CHECK</td><td>值必須符合條件</td><td>負數的股數、超過 100 的百分比安靜存進去</td></tr>
+            <tr><td class="m">FOREIGN KEY</td><td>必須對應到另一張表存在的列</td><td>指向不存在標的的孤兒資料，JOIN 時整批消失</td></tr>
+            <tr><td class="m">PRIMARY KEY</td><td>身分：唯一且不為空</td><td>無法指定「就是這一列」</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>唯一鍵還有一個額外用途：<strong>它是「重跑不會寫兩筆」的實作基礎</strong>——沒有唯一鍵，就沒有辦法讓寫入變成可安全重複的操作。</p>
+    </div>
+    <p class="so"><span>所以</span>建表時的判斷句是：<strong>這條規則會不會有人忘記？會，就交給資料庫。</strong>約束擋下來的那一刻，是這筆錯誤唯一會發出聲音的時刻。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>NULL 不是 0，也不是「否」，是「不知道」</h4>
+    <p>這是整層裡最容易誤解、後果最嚴重的一個觀念。空值（<code>NULL</code>）不是一個值，它是「這裡沒有資訊」。所以任何和它做的運算，結果都是「不知道」。</p>
+    <p>於是布林判斷不是兩種結果，而是<strong>三種</strong>：真、假、不知道。而條件篩選<strong>只留下「真」</strong>——「不知道」和「假」一樣會被丟掉。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>真值表，兩行就能解釋大量詭異行為：</p>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th class="m">運算</th><th class="m">結果</th><th>後果</th></tr></thead>
+          <tbody>
+            <tr><td class="m">TRUE AND NULL</td><td class="m">NULL</td><td>條件不成立，這一列被丟掉</td></tr>
+            <tr><td class="m">FALSE AND NULL</td><td class="m">FALSE</td><td>（這個沒問題）</td></tr>
+            <tr><td class="m">TRUE OR NULL</td><td class="m">TRUE</td><td>（這個也沒問題）</td></tr>
+            <tr><td class="m">NULL = NULL</td><td class="m">NULL</td><td><strong>永遠不成立</strong>——要用 <code>IS NULL</code></td></tr>
+            <tr><td class="m">x &lt;&gt; 'A'</td><td class="m">NULL</td><td>x 為空時，這一列<strong>不會</strong>出現在「不等於 A」的結果裡</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre>-- 一個守門查詢
+SELECT * FROM state WHERE enabled AND heartbeat > now() - interval '60 s';
+
+-- heartbeat 是 NULL 時：TRUE AND NULL → NULL → 這列被丟掉 → 回傳零列
+-- 如果程式把「零列」當成「不該執行」，這個任務就永久停擺，而且不報錯
+
+-- 明確處理空值，並宣告「查不到時算什麼」
+SELECT COALESCE(
+         (SELECT enabled AND heartbeat > now() - interval '60 s'
+            FROM state WHERE id = 1),
+         TRUE            -- 查不到 → 照跑
+       ) AS should_run;</pre>
+      <p>另外兩個實用差別：聚合函式會<strong>跳過</strong>空值（所以 <code>AVG</code> 的分母可能不是你想的那個數）；<code>COUNT(*)</code> 數列數，<code>COUNT(欄位)</code> 只數該欄非空的列。</p>
+    </div>
+    <p class="so"><span>所以</span>任何依賴布林判斷的守門機制，都要明確處理「不知道」的情況，並且明確宣告查不到資料時算什麼。沒宣告的話，它會壞向實作細節碰巧決定的那一邊。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>浮點數存不了小數：金額為什麼要用定點</h4>
+    <p>浮點數（<span class="en">float / double</span>）用二進位科學記號存數字。問題是：<strong>很多十進位小數在二進位裡是無限循環的</strong>，就像 1/3 在十進位是 0.333⋯ 一樣。<code>0.1</code> 就是其中一個——它存進去的其實是一個非常接近但不等於 0.1 的值。</p>
+    <p>單次運算誤差小到看不見，但<strong>累加會讓誤差浮上來</strong>。而金額的累加正是這種操作，於是你得到一個無法解釋的尾差，而且是對帳時最難查的那一類。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>$ python3 -c "print(0.1 + 0.2)"
+0.30000000000000004          ← 不是 0.3
+
+$ python3 -c "print(f'{0.1:.20f}')"
+0.10000000000000000555       ← 存進去的其實是這個
+
+$ python3 -c "print(0.1 + 0.2 == 0.3)"
+False</pre>
+      <p>定點型別（<code>NUMERIC</code> / <code>DECIMAL</code>）改成<strong>以十進位位數儲存</strong>，所以它存得下精確的 0.1。代價是運算慢一些——對金額來說完全值得。</p>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>資料</th><th>該用</th></tr></thead>
+          <tbody>
+            <tr><td>金額、股數、比例</td><td class="m">NUMERIC(精度, 小數位)</td></tr>
+            <tr><td>測量值、統計中間值</td><td class="m">DOUBLE PRECISION（誤差可接受）</td></tr>
+            <tr><td>需要極致效能的金額</td><td>整數存最小單位（例如以「分」為單位）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="so"><span>所以</span>金額欄位一律定點型別。而且要注意<strong>跨邊界時的降級</strong>——資料在資料庫裡是定點，經過某些驅動或轉成另一種語言的型別時可能變成浮點，於是尾差在系統邊界上悄悄產生。要在邊界明確轉換。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">5</span>交易：全部發生，或全部沒發生</h4>
+    <p>交易（<span class="en">transaction</span>）是把好幾個操作包成一個不可分割的單位。中間任何一步失敗，整批退回，資料庫回到開始前的樣子。</p>
+    <p>常被引用的四個性質叫 <span class="en">ACID</span>：<strong>原子性</strong>（全有或全無）、<strong>一致性</strong>（不會違反約束）、<strong>隔離性</strong>（其他人看不到你做一半的狀態）、<strong>持久性</strong>（提交後就算斷電也還在）。</p>
+    <p>其中隔離性有個實務細節：它有<strong>等級</strong>。多數資料庫預設的等級只保證「你不會讀到別人未提交的資料」，但<strong>不保證你在同一個交易裡讀兩次會得到同樣的結果</strong>。這是「先讀出來、算一算、再寫回去」這種寫法會出錯的原因。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>交易還有一個很少被提到的用途——<strong>最乾淨的測試隔離</strong>：</p>
+      <pre>BEGIN;
+  -- 寫入你需要的測試資料
+  -- 執行要驗證的計算
+  -- 比對結果
+ROLLBACK;      ← 資料庫回到原狀，什麼都沒留下</pre>
+      <p>好處是你用的是<strong>真實的結構與真實的約束</strong>，而不是一份可能已經和正式環境不同步的複本。不需要另外維護一套測試資料庫。</p>
+    </div>
+    <p class="so"><span>所以</span>凡是「這幾件事必須一起成立」的地方就開交易。而「先讀、再算、再寫」的模式要改成一步完成的條件更新（例如 <code>UPDATE ... WHERE 版本 = 讀到的版本</code>），否則兩個同時執行的人會互相覆蓋。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">6</span>索引是一本排好序的目錄</h4>
+    <p>沒有索引，資料庫要找一列資料只能從頭掃到尾。索引（<span class="en">index</span>）是額外維護的一份排序結構（最常見的是 <span class="en">B-tree</span>），像書末的索引一樣，讓它能直接跳到位置，而不是逐頁翻。</p>
+    <p>代價有兩個：占空間，以及<strong>每次寫入都要順便更新索引</strong>，所以寫入變慢。這就是「不要每個欄位都建索引」的原因——索引要跟著<strong>你實際會下的查詢</strong>建。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>複合索引有個必須知道的規則：<strong>只能從最左邊開始用</strong>（<span class="en">leftmost prefix</span>）。假設索引建在 <code>(symbol, trade_date)</code>：</p>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>查詢條件</th><th>用得到嗎</th></tr></thead>
+          <tbody>
+            <tr><td class="m">WHERE symbol = '2330'</td><td>✓ 用得到</td></tr>
+            <tr><td class="m">WHERE symbol = '2330' AND trade_date &gt; …</td><td>✓ 最理想</td></tr>
+            <tr><td class="m">WHERE trade_date &gt; …</td><td>✗ 用不到（跳過了最左邊那欄）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>想知道某個查詢實際上有沒有用到索引，不要猜——資料庫可以直接告訴你：</p>
+      <pre>EXPLAIN ANALYZE SELECT ... ;
+-- 輸出裡出現 Seq Scan（全表掃描）＝ 沒用到索引
+-- 出現 Index Scan ＝ 用到了</pre>
+    </div>
+    <p class="so"><span>所以</span>小規模系統通常只需要極少數索引，力氣花在「不讓錯資料進來」比花在「讓查詢變快」值得。等到真的慢了，用 <code>EXPLAIN</code> 看實際執行計畫再決定，不要憑感覺加索引。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">three-valued logic SQL · NULL semantics · database constraint · ACID · isolation level · lost update · B-tree index · leftmost prefix · EXPLAIN ANALYZE · IEEE 754 · decimal arithmetic · materialized view · upsert</dd>
+      <dt>值得讀的東西</dt>
+      <dd>《SQL Antipatterns》（作者 Bill Karwin）——整本書就是在講「這樣設計會出什麼事」，正好對應這一層要的判斷力。想再深一層的話，《Designing Data-Intensive Applications》（作者 Martin Kleppmann）第 7 章專講交易與隔離等級，是這個題目最清楚的一份說明。</dd>
+      <dt>動手方向</dt>
+      <dd>在一個交易裡故意寫入一筆違反約束的資料，確認它被擋下；然後把那個約束移除、寫入同一筆、往下游查一次，看那筆錯資料造成了什麼。最後 <code>ROLLBACK</code>。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L5 ═══════════════ -->
+<article class="ch" id="l5">
+  <header class="ch-head">
+    <p class="ch-num">L5</p>
+    <h2>資料源與網路協定</h2>
+    <p class="ch-sub">你的系統和外面世界之間的每一次對話。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>實際故障數量最多的一層。因為外面的世界不受你控制：它會改版、會限流、會回一個格式正確但內容是空的東西、會在你最需要它的時候不回應。</p>
+    <p>而這些狀況大多<strong>不會觸發你寫的錯誤處理</strong>，因為它們在技術上都算「成功」。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>一次呼叫的四段</b>——各自的失敗方式 <em>DNS, TCP, TLS, HTTP</em></li>
+      <li><b>狀態碼的語意</b>——它講傳輸不講內容 <em>status code semantics</em></li>
+      <li><b>逾時的兩個數字</b>——連線與讀取 <em>connect / read timeout</em></li>
+      <li><b>重試與幂等</b>——什麼可以重試 <em>backoff, idempotency key</em></li>
+      <li><b>位元組與文字</b>——編碼與亂碼 <em>encoding, UTF-8</em></li>
+      <li><b>JSON 的兩個坑</b>——日期與大整數 <em>JSON number precision</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>一次呼叫其實是四段，各有各的失敗</h4>
+    <p>你寫一行「去抓這個網址」，實際上發生了四件事，順序固定，每一段都可能單獨失敗——而且失敗訊息長得完全不一樣：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw">
+        <table>
+          <thead><tr><th>段</th><th>做什麼</th><th>失敗時你會看到</th></tr></thead>
+          <tbody>
+            <tr><td class="m">DNS</td><td>網域名 → IP 位址</td><td>找不到主機（<span class="en">name resolution failed</span>）</td></tr>
+            <tr><td class="m">TCP</td><td>和那個 IP 建立連線</td><td>連線被拒絕、連線逾時</td></tr>
+            <tr><td class="m">TLS</td><td>加密協商、驗證對方憑證</td><td>憑證錯誤、憑證過期、協定版本不合</td></tr>
+            <tr><td class="m">HTTP</td><td>送出請求、拿回回應</td><td>狀態碼 4xx / 5xx、內容解析失敗</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>知道分段的實用價值是：<strong>「連不上」和「連上了但回錯」要往完全不同的方向查</strong>。前者是網路與位址問題，後者是應用與參數問題。</p>
+    </div>
+    <p class="so"><span>所以</span>看到錯誤訊息先歸段。名稱解析失敗不必去檢查你的權杖對不對；憑證錯誤不必去檢查參數格式。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>狀態碼講的是傳輸，不是內容</h4>
+    <p>HTTP 狀態碼（<span class="en">status code</span>）分四類：<code>2xx</code> 成功、<code>3xx</code> 重導、<code>4xx</code> 你的請求有問題、<code>5xx</code> 對方出問題。</p>
+    <p>關鍵在於 <code>200</code> 的真正含義是「<strong>我收到了、我處理了、我把回應送出去了</strong>」。它完全沒有保證內容是對的、是完整的、甚至不保證裡面有東西。「參數錯誤導致查不到資料」在很多服務上是 <code>200</code> 加一個空結果，不是 <code>400</code>。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>回應狀態：200 OK
+回應內容：{"data": [], "rtcode": "0000"}
+
+# 三件事都成立：連線成功、狀態正常、格式正確
+# 但資料是空的，而你的程式如果照常寫入 → 一批合法的空值進資料庫</pre>
+      <p>這種「安靜地成功」通常來自參數錯誤：代號的前綴錯了、日期格式對方不認、權杖只有部分權限。對方沒有義務告訴你。</p>
+    </div>
+    <p class="so"><span>所以</span>每個對外呼叫都要對<strong>內容本身</strong>做健全性檢查：該有的欄位在不在、數量是否合理、關鍵值是否為空。檢查不過就拒絕寫入並發出聲音——<strong>寧可在寫入時失敗得大聲，也不要在讀取時錯得安靜。</strong></p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>逾時是兩個數字，而預設值通常是「無限等」</h4>
+    <p>逾時（<span class="en">timeout</span>）不是一個數字，是兩個：<strong>連線逾時</strong>（等對方接受連線）和<strong>讀取逾時</strong>（連上了，等對方把資料送完）。兩者的合理值差很多——連線幾秒就該放棄，讀取可能要給幾十秒。</p>
+    <p>而多數 HTTP 客戶端<strong>預設不設逾時</strong>，也就是無限等待。這是一個很容易忽略的預設值，後果卻很嚴重：對方掛住時，你的流程一起掛住，而且<strong>沒有錯誤訊息</strong>——從外面看就像還在執行。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre># 最壞的一種：發送告警的呼叫沒有逾時
+requests.post(webhook, json=payload)
+# 對方掛掉時 → 你的主流程卡在這裡
+# → 告警機制本身變成故障源，而且正好發生在你最需要收到告警的時候
+
+# 兩個數字分開設
+requests.post(webhook, json=payload, timeout=(3, 10))
+#                                            ↑連線 ↑讀取</pre>
+    </div>
+    <p class="so"><span>所以</span>每一個對外呼叫都要有逾時，一個例外都不要留。尤其是通知與告警那幾條——它們最容易被忘記，而它們失效的時機最糟。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>重試：只重試該重試的，而且要能安全重試</h4>
+    <p>錯誤分兩種。<strong>暫時性的</strong>（連線中斷、<code>429</code> 被限流、<code>5xx</code> 對方內部錯誤）值得重試。<strong>永久性的</strong>（<code>400</code> 參數錯、<code>401</code> 認證失敗、<code>404</code> 不存在）重試一百次結果都一樣，只是浪費。</p>
+    <p>重試的間隔要用<strong>指數退避加抖動</strong>（<span class="en">exponential backoff with jitter</span>）：1 秒、2 秒、4 秒、8 秒，每次再加一點隨機偏移。指數是為了不在對方最脆弱的時候持續加壓；抖動是為了避免所有客戶端同時重試，把對方再壓垮一次。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>還有一個關鍵問題：<strong>這個操作重試安全嗎？</strong>HTTP 方法本身就有答案：</p>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th class="m">方法</th><th>重複執行</th><th>重試</th></tr></thead>
+          <tbody>
+            <tr><td class="m">GET</td><td>結果相同</td><td>安全</td></tr>
+            <tr><td class="m">PUT / DELETE</td><td>結果相同（設計上）</td><td>安全</td></tr>
+            <tr><td class="m">POST</td><td><strong>會再建立一次</strong></td><td>不安全</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>「結果相同」這個性質叫<strong>幂等</strong>（<span class="en">idempotent</span>）。要讓 <code>POST</code> 變成可安全重試，做法是帶一把<strong>幂等鍵</strong>（<span class="en">idempotency key</span>）——你自己產生一個唯一字串，對方看到同一把鍵就不再重複建立。付款類的服務幾乎都支援這個。</p>
+    </div>
+    <p class="so"><span>所以</span>寫重試邏輯前先問兩題：這個錯誤重試有用嗎？這個操作重試安全嗎？兩題都是「是」才重試。而網路超時最麻煩——你不知道對方到底做了沒有，這時幂等鍵是唯一的解法。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">5</span>位元組與文字：亂碼是怎麼來的</h4>
+    <p>檔案與網路上流動的都是<strong>位元組</strong>，不是文字。要變成文字，必須知道用哪一套<strong>編碼</strong>（<span class="en">encoding</span>）去解讀。用錯的那一套去解，就是亂碼——而且<strong>過程完全不會報錯</strong>，只是解出一堆看不懂的字。</p>
+    <p>現在的標準是 UTF-8，但舊系統（尤其是政府與傳統企業的匯出檔）常常是舊編碼。而<strong>檔名比內容更容易出錯</strong>：壓縮檔格式裡有一個旗標位元專門標示「檔名是 UTF-8」，舊工具不設這個旗標，於是檔名的編碼變成不確定的。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre># 錯的解法：靠檔名找檔案
+for name in zipfile.namelist():
+    if "景氣" in name:        ← 檔名編碼一變，這裡就永遠找不到
+        ...
+
+# 對的解法：靠內容特徵找檔案
+for name in zipfile.namelist():
+    head = zf.read(name)[:200].decode("utf-8", errors="replace")
+    if head.startswith("Date") and "綜合分數" in head:
+        ...</pre>
+      <p>而「找不到」如果被實作成安靜跳過，那一次的資料就永久缺了。</p>
+    </div>
+    <p class="so"><span>所以</span>判斷「這是哪一個檔案」時，用內容特徵而不是檔名。而任何解碼失敗都要出聲，不要用「忽略錯誤」把它蓋掉。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">6</span>JSON 的兩個坑：沒有日期，數字是浮點</h4>
+    <p>JSON 的型別只有六種：物件、陣列、字串、數字、布林、空值。<strong>沒有日期型別</strong>——所有日期都是字串，格式全靠雙方約定。所以「時區到哪去了」這類問題在 JSON 邊界特別常發生：一個沒有時區標記的時間字串，接收端只能猜。</p>
+    <p>第二個坑更隱蔽：<strong>JSON 的數字在多數實作裡是雙精度浮點</strong>。所以超過 2<sup>53</sup> 的整數（大約 9,007,199,254,740,992）會失去精度。這對長整數識別碼是致命的——雪花演算法產生的 ID、某些系統的訂單號都在這個範圍。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>$ python3 -c "import json; print(json.loads('{\"id\": 9007199254740993}'))"
+{'id': 9007199254740993}      ← Python 沒事（它有大整數）
+
+# 但同一份 JSON 進到 JavaScript：
+JSON.parse('{"id": 9007199254740993}')
+// { id: 9007199254740992 }   ← 最後一位變了，而且不報錯</pre>
+      <p>兩個坑的解法是同一個：<strong>把它們變成字串</strong>。時間用帶時區的標準格式字串（<code>2026-09-09T13:30:00+08:00</code>），長識別碼用字串傳。</p>
+    </div>
+    <p class="so"><span>所以</span>設計介面時，時間一律帶時區的字串，識別碼一律字串。這兩件事後來要改都很痛，因為兩邊都已經依賴既有格式。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">connect vs read timeout · exponential backoff jitter · idempotency key · HTTP idempotent methods · retry-after header · rate limiting 429 · character encoding mojibake · ISO 8601 · JSON number precision · webhook signature verification</dd>
+      <dt>值得讀的東西</dt>
+      <dd>你在用的 HTTP 客戶端的「timeouts」與「retries」兩節官方文件——預設值各家不同，這裡不能靠通論。另外 Joel Spolsky 那篇〈The Absolute Minimum Every Software Developer Must Know About Unicode〉是編碼這個題目最經濟的一份說明。</dd>
+      <dt>動手方向</dt>
+      <dd>把你依賴的外部來源的每一種回應各存成一個檔案：正常、空殼、極端值、對方掛掉、格式變了。然後讓解析邏輯能在完全不連網的情況下重播這五種。這個練習的副產品比練習本身值錢——它把「必須等到特定時機才能驗證」的部分縮到最小。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L6 ═══════════════ -->
+<article class="ch" id="l6">
+  <header class="ch-head">
+    <p class="ch-num">L6</p>
+    <h2>程序、排程與並發</h2>
+    <p class="ch-sub">什麼時候發生、發生幾次、同時發生會怎樣。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>這一層的故障有個共同特徵：<strong>在測試時不會發生</strong>。因為測試是一次一件事，而問題只在兩件事剛好同時發生時出現——可能一個月一次，而且無法重現。</p>
+    <p>它也負責時間。而時間的錯誤特別安靜：排程<strong>照跑</strong>，只是跑在錯的時刻，所有「有沒有執行」的檢查都會顯示正常。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>程序與執行緒</b>——共享記憶體才有競態 <em>process, thread</em></li>
+      <li><b>檢查與動作之間的空隙</b>——競態的本質 <em>race condition, TOCTOU</em></li>
+      <li><b>原子操作</b>——把兩步合成一步 <em>atomic, compare-and-swap</em></li>
+      <li><b>租約與心跳</b>——鎖被帶走怎麼辦 <em>lease, TTL, heartbeat</em></li>
+      <li><b>排程與時區</b>——表達式不帶時區 <em>cron, UTC, DST</em></li>
+      <li><b>交付語意</b>——至少一次與幂等 <em>at-least-once delivery</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>程序與執行緒：問題出在共享的東西</h4>
+    <p><strong>程序</strong>（<span class="en">process</span>）有自己獨立的記憶體，兩個程序看不到對方的變數。<strong>執行緒</strong>（<span class="en">thread</span>）是同一個程序裡的多條執行流，<strong>共享同一份記憶體</strong>。</p>
+    <p>這個差別決定了問題會出在哪：<strong>凡是共享的東西，就是競態的發生地</strong>。同一個程序裡的變數、多個程序共享的一張資料庫表、多台機器共用的一個檔案——都是共享，都會出同一類問題。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>順帶釐清兩個常被混用的詞：<strong>並發</strong>（<span class="en">concurrency</span>）是多件事交錯進行，即使只有一個處理器也成立；<strong>並行</strong>（<span class="en">parallelism</span>）是真的同時執行，需要多個處理器。</p>
+      <p>實務上這個區分不太重要，因為<strong>兩者都會產生競態</strong>——只要「A 做到一半、B 插進來」就足夠了，不需要真的同時。</p>
+    </div>
+    <p class="so"><span>所以</span>盤點風險時，找的是「有幾個東西在寫同一個地方」。答案大於一，就要往下一個觀念想。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>檢查與動作之間的空隙</h4>
+    <p>幾乎所有並發錯誤都是同一個形狀：<strong>你先檢查一個條件，然後根據檢查結果去動作，而在這兩步之間，世界變了。</strong>這個模式有個名字叫「檢查到使用之間」（<span class="en">TOCTOU, time-of-check to time-of-use</span>）。</p>
+    <p>它的危險在於程式碼看起來完全正確——你確實檢查了。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>時間  執行者 A                    執行者 B
+────  ────────────────────────  ────────────────────────
+ t0   查詢：有人在跑嗎？→ 沒有
+ t1                             查詢：有人在跑嗎？→ 沒有
+ t2   標記「我在跑」
+ t3                             標記「我在跑」
+ t4   抓資料 → 寫入
+ t5                             抓到較舊的資料 → 寫入
+                                ↑ 覆蓋了 A 的新資料，畫面上的值退步了</pre>
+      <p>加鎖能縮小空隙，但不能消滅它——因為「取得鎖」本身也是一次檢查加一次動作，除非那個動作在底層是不可分割的。</p>
+    </div>
+    <p class="so"><span>所以</span>看到「先查再寫」的程式碼，就要假設中間會被插隊。這不是罕見情況，是預設情況。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>解法是原子操作：把兩步合成一步</h4>
+    <p>真正的解法不是把空隙變小，而是<strong>讓檢查和動作變成一個不可分割的操作</strong>（<span class="en">atomic operation</span>）。做法有幾種，都是把條件放進寫入語句本身：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw">
+        <table>
+          <thead><tr><th>手法</th><th>怎麼做</th><th>擋住什麼</th></tr></thead>
+          <tbody>
+            <tr><td>唯一約束</td><td>讓資料庫拒絕重複的鍵</td><td>同一件事被記兩次</td></tr>
+            <tr><td>條件更新</td><td><code>UPDATE … WHERE 版本 = 我讀到的版本</code>，影響 0 列就代表被人搶先了</td><td>兩人互相覆蓋（<span class="en">lost update</span>）</td></tr>
+            <tr><td>時序守衛</td><td><code>UPDATE … WHERE 新時戳 &gt;= 現有時戳</code></td><td>舊資料覆蓋新資料</td></tr>
+            <tr><td>寫入時衝突處理</td><td><code>INSERT … ON CONFLICT DO UPDATE</code>（<span class="en">upsert</span>）</td><td>「先查有沒有、再決定插入或更新」的空隙</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>共同點是：<strong>條件的判定發生在資料庫內部，和寫入是同一個動作</strong>，中間沒有你的程式可以被插隊的位置。</p>
+      <p>另外有個實務細節值得記：時序守衛用 <code>&gt;=</code> 還是 <code>&gt;</code> 會決定「同一個時戳的資料寫不寫得進去」。用 <code>&gt;</code> 的話，同時戳的更新會被靜默丟棄。</p>
+    </div>
+    <p class="so"><span>所以</span>並發問題的正解幾乎都在資料層，不在程式層。<strong>兩道防線的分工是：旗標或鎖讓它們盡量不要同時發生，原子操作讓同時發生也無害。</strong>第二道不能省。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>鎖會被帶走：改用有期限的租約</h4>
+    <p>鎖有個致命問題：<strong>持有者崩潰時，鎖不會自己釋放</strong>。程序被殺掉、機器斷電、使用者直接關掉瀏覽器——這些都不會通知任何人，於是那把鎖永遠卡在那裡，而被它擋住的工作永久停擺。</p>
+    <p>解法是<strong>租約</strong>（<span class="en">lease</span>）：鎖帶一個有效期限，持有者必須定期<strong>續約</strong>（也就是心跳／<span class="en">heartbeat</span>）。持有者一消失就不再續約，期限一到租約自動失效，別人就能接手。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>持有者：每 10 秒更新一次 heartbeat = now()
+接手者：檢查 (enabled AND heartbeat > now() - 60 秒)
+        → 條件不成立就表示對方已消失，我可以接手</pre>
+      <p>期限的選擇是一個取捨：太短會在對方只是暫時卡住時誤判、造成兩邊同時執行；太長會讓故障後的空窗期變長。所以<strong>租約一定要搭配上一個觀念的原子操作</strong>——因為誤判是設計中允許發生的事。</p>
+      <p>還有一個必須明確決定的問題：<strong>查不到那筆狀態紀錄時，該算「有人在跑」還是「沒人在跑」？</strong>這決定了機制壞掉時系統偏向哪一邊，必須由後果決定——漏做的代價大就偏向照做，重複做的代價大就偏向不做。沒有明確宣告的話，它會壞向實作細節碰巧決定的那一邊。</p>
+    </div>
+    <p class="so"><span>所以</span>任何「誰在負責」的協調機制都要有期限與心跳，不要用永久鎖。並且要明確寫下「狀態讀不到時算什麼」。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">5</span>排程表達式不帶時區</h4>
+    <p>經典的排程語法有五個欄位：<strong>分、時、日、月、星期</strong>。<code>*</code> 是每一個，<code>*/5</code> 是每五個，逗號列舉，連字號表範圍。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>*/5  9-13  *  *  1-5     每週一到五、9 到 13 點、每 5 分鐘
+30   10     *  *  *       每天 10:30
+45   10,23  *  *  *       每天 10:45 和 23:45
+
+┌─ 分 (0-59)
+│ ┌─ 時 (0-23)
+│ │ ┌─ 日 (1-31)
+│ │ │ ┌─ 月 (1-12)
+│ │ │ │ ┌─ 星期 (0-6，0 是週日)
+* * * * *</pre>
+      <p>重點是<strong>這串表達式裡沒有時區的位置</strong>。時區來自執行它的那個排程器的設定，而排程器的預設時區<strong>經常不是你所在的時區</strong>。</p>
+      <p>後果是最典型的安靜出錯：任務每天都準時執行，只是準時在別的地方的下午。所有「它有沒有跑」的檢查都會顯示正常，只有去對紀錄的時戳才會發現。</p>
+    </div>
+    <p class="so"><span>所以</span>每一個排程都要明確宣告時區，不要依賴預設值。而如果你的平台只吃固定時區（通常是 UTC），就自己換算好並在旁邊註明——<code>45 10 * * *</code> 要寫上「＝台北 18:45」，否則半年後沒人看得懂那個 10 是什麼。</p>
+    <div class="warn"><b>另外一個坑：</b>有日光節約時間的地區，本地時間一年會有一天缺一小時、有一天多一小時。排在那個區間的任務會少跑或跑兩次。系統內部一律用 UTC 儲存與計算、只在顯示時轉成本地時間，可以避開這一整類問題。</div>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">6</span>「至少一次」是現實，所以消費端必須幂等</h4>
+    <p>任何跨網路的訊息傳遞都面對同一個難題：送出去之後沒收到確認，你不知道對方到底收到了沒有。於是只有兩種選擇：<strong>重送</strong>（可能重複）或<strong>不重送</strong>（可能遺失）。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>語意</th><th>代價</th></tr></thead>
+          <tbody>
+            <tr><td><span class="en">at-most-once</span> 最多一次</td><td>可能遺失</td></tr>
+            <tr><td><span class="en">at-least-once</span> 至少一次</td><td>可能重複</td></tr>
+            <tr><td><span class="en">exactly-once</span> 剛好一次</td><td>在分散式環境下無法單靠傳遞機制達成</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>所以實務上的答案固定是：<strong>用「至少一次」的傳遞，加上一個幂等的接收端</strong>。重複到達沒關係，因為接收端處理第二次時什麼都不會多做。</p>
+      <p>幂等接收端的實作就是唯一鍵：把「這件事的身分」定義清楚，寫進唯一約束。而<strong>身分的定義要包含所有「會讓它變成一件新事」的參數</strong>——少一個，改了設定後重新發生的事件會被誤判成重複而丟掉。</p>
+    </div>
+    <p class="so"><span>所以</span>不要追求「保證只送一次」，那是做不到的。要做的是讓「收到兩次」變成無害。任何處理外部訊息、任何會被重跑的任務，都要先回答「重複執行會怎樣」。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">race condition · TOCTOU · atomic operation · compare-and-swap · optimistic locking · lost update · lease with TTL · heartbeat timeout · fail-open vs fail-closed · cron timezone · daylight saving time bug · at-least-once delivery · idempotent consumer</dd>
+      <dt>值得讀的東西</dt>
+      <dd>《Designing Data-Intensive Applications》第 8、9 章（分散式系統的麻煩、一致性與共識）。它把「為什麼剛好一次做不到」講得最清楚。時間的部分可以找 <b>Falsehoods programmers believe about time</b> 這份清單，一次看完所有會踩的坑。</dd>
+      <dt>動手方向</dt>
+      <dd>先寫下你的預測，再把某個守門機制所依賴的狀態紀錄整筆刪掉，然後執行那個任務。它跑，還是不跑？預測錯的地方就是你的空缺所在。在還有人依賴的系統上，先備份那筆紀錄或改在另一份環境做。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L7 ═══════════════ -->
+<article class="ch" id="l7">
+  <header class="ch-head">
+    <p class="ch-num">L7</p>
+    <h2>部署與拓撲</h2>
+    <p class="ch-sub">你的程式實際跑在哪裡，以及它和其他東西之間的線怎麼接。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>不懂這一層，你會做出兩類錯誤判斷：把「距離造成的慢」誤判成程式效能問題，然後去優化一個部署後根本不存在的瓶頸；以及不知道自己的哪一條線暴露在公開網路上。</p>
+    <p>好消息是這一層的門檻很低——<strong>能畫出一張標註清楚的圖，就守住大半。</strong></p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>容器是什麼</b>——隔離的程序，不是虛擬機 <em>namespace, cgroup</em></li>
+      <li><b>距離的算術</b>——往返時間乘以次數 <em>round-trip time, chatty app</em></li>
+      <li><b>服務怎麼被找到</b>——內部名稱與對外入口 <em>service discovery, ingress</em></li>
+      <li><b>組態從外面注入</b>——同一份產物跑在不同環境 <em>config injection</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>容器是被隔離的程序，不是一台小電腦</h4>
+    <p>容器（<span class="en">container</span>）常被想成「輕量虛擬機」，這個比喻會誤導。它其實就是<strong>一個普通程序</strong>，只是作業系統對它撒了兩個謊：</p>
+    <p><strong>命名空間</strong>（<span class="en">namespace</span>）讓它只看得到屬於自己的東西——自己的檔案系統視角、自己的程序清單、<strong>自己的一組網路介面</strong>。<strong>資源限制</strong>（<span class="en">cgroup</span>）限制它能用多少記憶體與處理器。沒有第二個作業系統核心，也沒有開機過程。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>「自己的一組網路介面」這件事直接解釋了一個常見困惑：容器有<strong>自己的迴環位址</strong>。所以容器裡綁 <code>127.0.0.1</code> 的意思是「只有這個容器內部連得到」，就算端口映射設對了也一樣連不進去。</p>
+      <p>資源限制也解釋了另一件事：容器被記憶體上限殺掉時，是外面的機制送出強制終止訊號，<strong>程式來不及留下任何訊息</strong>。你只會看到結束碼 137。</p>
+    </div>
+    <p class="so"><span>所以</span>容器裡一律綁 <code>0.0.0.0</code>；看到結束碼 137 先去看記憶體上限，不要在程式碼裡找原因。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>距離的算術：往返時間乘以次數</h4>
+    <p>每一次查詢都要等資料在網路上跑一趟來回，這叫<strong>往返時間</strong>（<span class="en">round-trip time</span>）。同一個機房內部大約 1 毫秒，跨大陸大約 200 到 300 毫秒——<strong>差兩個數量級</strong>。</p>
+    <p>關鍵是它會被<strong>查詢次數放大</strong>。一個頁面下十幾條查詢是很平常的事：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>路徑</th><th>單次往返</th><th class="m">× 12 次查詢</th></tr></thead>
+          <tbody>
+            <tr><td>同機房內網</td><td class="m">1 ms</td><td class="m">12 ms</td></tr>
+            <tr><td>跨公網</td><td class="m">250 ms</td><td class="m">3,000 ms</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>同一份程式碼、同一個資料庫、同樣的查詢，差別只有距離，結果是「感覺很快」和「每次載入等三秒」。</p>
+      <p>所以「本機連雲端資料庫」的開發體驗天生就慢，<strong>那個慢是預期行為，不是效能問題</strong>。拿它當效能指標會得到完全錯誤的結論。</p>
+      <p>解法有兩個方向：<strong>把距離縮短</strong>（把服務部署到資料庫旁邊）或<strong>把次數減少</strong>（合併查詢）。前者通常便宜得多。</p>
+    </div>
+    <p class="so"><span>所以</span>看到「每一次都慢」而不是「某一次慢」，先算距離乘次數，再考慮優化程式。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>服務怎麼被找到：內部名稱與對外入口</h4>
+    <p>雲端上的服務沒有固定位址——它可能被重啟、被搬到另一台機器、同時跑三份。所以平台提供兩套定位機制，而它們的安全性質完全不同：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw">
+        <table>
+          <thead><tr><th>機制</th><th>怎麼運作</th><th>誰連得到</th></tr></thead>
+          <tbody>
+            <tr><td><strong>內部名稱</strong></td><td>平台的內部網域名，指向當前實際位置</td><td>只有同一個網路邊界內的服務</td></tr>
+            <tr><td><strong>對外入口</strong></td><td>在邊緣開一個公開端口，轉發到內部服務</td><td><strong>全世界</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>「同一個專案／同一個網路」在雲端不是組織上的分類，<strong>它是一條網路邊界</strong>。邊界之內走內網（快、不對外暴露），之外的一切都要繞公網。</p>
+      <p>另外，你的服務要監聽的端口通常是<strong>平台指定並用環境變數注入的</strong>，不是你決定的。把端口寫死在某些平台會直接啟動失敗。</p>
+    </div>
+    <p class="so"><span>所以</span>每開一個對外入口，就是多開一道全世界都能敲的門。沒有流量在用的入口要關掉——臨時需要時用平台的臨時通道，用完即斷，這樣它平時在公網上是不存在的。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>組態從外面注入，產物保持乾淨</h4>
+    <p>同一份程式要跑在本機、測試、正式三個環境，而三個環境的資料庫位址、金鑰、網域都不同。原則是：<strong>把這些差異全部放進環境變數，讓程式產物本身完全不含環境資訊。</strong></p>
+    <p>這樣同一份產物可以原封不動地部署到任何環境，而「換環境」不需要重建。反過來，把設定寫進程式或打包進映像檔，就等於每個環境要一份不同的產物，而它們會慢慢分岔。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>平台通常支援<strong>引用式變數</strong>——一個服務的變數可以指向另一個服務的值：</p>
+      <pre>DATABASE_URL = postgresql://user:${{Postgres.PASSWORD}}@${{Postgres.HOST}}:5432/mydb</pre>
+      <p>好處不是省打字，是<strong>輪替密碼時只需要改一個地方</strong>。複製貼上的做法在輪替時一定會漏掉一處，而漏掉的那一處會在幾天後以「某個服務連不上」的形式出現。</p>
+    </div>
+    <p class="so"><span>所以</span>任何會隨環境變化的值都走環境變數，能用引用式就不要複製貼上。而部署時如果是直接上傳目錄，一定要有排除清單——否則本機的秘密檔案與虛擬環境會一起上去。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">linux namespace cgroup · container vs VM · round-trip time latency · chatty application · N+1 query · service discovery · private networking · ingress / TCP proxy · twelve-factor app config · immutable deployment</dd>
+      <dt>值得讀的東西</dt>
+      <dd><b>The Twelve-Factor App</b>（十二要素應用）——很短，講的正好是這一層的原則，尤其 Config、Processes、Port binding 三節。它是二〇一一年的文件但幾乎沒有過時。</dd>
+      <dt>動手方向</dt>
+      <dd>畫出你系統的元件圖。每一條連線標註「內網或公網」，每一個秘密標註「存在哪裡」。畫完之後找一件事：<strong>圖上最短的一條攻擊路徑是什麼。</strong>如果答案是「某個對外端口加一組從未輪替過的密碼」，那就是下一件要處理的事。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L8 ═══════════════ -->
+<article class="ch" id="l8">
+  <header class="ch-head">
+    <p class="ch-num">L8</p>
+    <h2>身分、秘密與權限</h2>
+    <p class="ch-sub">誰碰得到你的東西，以及秘密放在哪裡。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>這一層的知識量不大，但錯誤的代價最高，而且最常見的錯法是<strong>誤以為自己已經做好了</strong>——接了第三方登入就以為權限管好了，開了加密就以為安全了。</p>
+    <p>更麻煩的是它的失敗特別安靜：授權設錯時，登入流程一切正常、日誌上每一次登入都是成功且合法的，只是不該進來的人進來了。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>認證與授權的分別</b>——你是誰 vs 你能做什麼 <em>authentication vs authorization</em></li>
+      <li><b>授權碼流程</b>——第三方登入實際怎麼走 <em>OAuth 2.0, OIDC, PKCE</em></li>
+      <li><b>權杖的性質</b>——簽章不是加密 <em>JWT, signing</em></li>
+      <li><b>加密做什麼、不做什麼</b>——傳輸與身分 <em>TLS, mTLS</em></li>
+      <li><b>秘密的存放與輪替</b>——換一把金鑰是一個動作 <em>secret management, rotation</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>認證與授權是兩件事，而第三方只解決前者</h4>
+    <p><strong>認證</strong>（<span class="en">authentication</span>）回答「你是誰」，像查驗護照。<strong>授權</strong>（<span class="en">authorization</span>）回答「你能做什麼」，像簽證——護照真實，不代表你能入境。</p>
+    <p>接上第三方登入時，你把<strong>認證</strong>委外了：對方負責確認這個人是誰。但<strong>授權仍然完全是你的責任</strong>。如果你沒有另外設定允許清單或角色，那麼全世界任何持有該平台帳號的人都能進來——而且認證層完全正常，日誌上每一次登入都合法。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>同樣是「忘記設一個值」，方向完全相反：</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>忘記設定</th><th>後果</th><th>音量</th></tr></thead>
+          <tbody>
+            <tr><td>允許的帳號清單</td><td>授權層失效、認證層正常 → <strong>任何人都進得來</strong></td><td>安靜</td></tr>
+            <tr><td>用戶端憑證</td><td>登入流程無法建立 → 所有人被擋在外面</td><td>大聲，而且在保護資料</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>所以每一個設定值都要知道自己屬於哪一種。理想的設計是讓所有安全相關的缺失都壞向「擋住」——沒有憑證就不提供服務，而不是沒有憑證就不檢查。</p>
+    </div>
+    <p class="so"><span>所以</span>接完第三方登入之後，還有一半的工作沒做。而在設定齊全之前，系統應該是擋住所有人，不是放行所有人。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>授權碼流程：把「用第三方登入」走一遍</h4>
+    <p>「用某個平台的帳號登入」背後是一套標準流程。它看起來繞，但每一步都在解決一個具體問題。四個角色先認清：<strong>使用者</strong>、<strong>你的應用</strong>、<strong>認證伺服器</strong>（那個平台）、<strong>資源伺服器</strong>（要被存取的 API）。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>1. 使用者點「用 X 登入」
+2. 你把他重導到 X，網址帶上：
+     client_id      你的應用身分（公開的）
+     redirect_uri   完成後要回到哪裡
+     scope          你要求的權限範圍
+     state          一段隨機字串
+     code_challenge 一段雜湊值
+3. 使用者在 X 上登入、同意授權
+4. X 把他重導回你的 redirect_uri，帶回一個 code 和原本的 state
+5. 你檢查 state 是不是自己發出去的那一個
+6. 你的後端拿 code + client_secret + code_verifier 去跟 X 換 token
+7. 拿到 token，才能代表使用者做事</pre>
+      <p>三個容易被當成裝飾的參數，各擋一種攻擊：</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>參數</th><th>擋什麼</th></tr></thead>
+          <tbody>
+            <tr><td class="m">state</td><td>別人偽造一個登入回呼塞給你的使用者（<span class="en">CSRF</span>）。你只接受自己發出過的那個值。</td></tr>
+            <tr><td class="m">redirect_uri</td><td>授權碼被送到攻擊者的網站。所以它必須<strong>事先在平台註冊</strong>，且完全比對——這也是為什麼三處位址必須一字不差。</td></tr>
+            <tr><td class="m">PKCE</td><td>授權碼在重導過程中被攔截。你先送出一段雜湊值，換 token 時才送出原文；攔到 code 的人沒有原文，換不到 token。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>另外釐清兩個常被混用的名字：<span class="en">OAuth 2.0</span> 本來只管「授權」（讓你的應用代表使用者存取資料）；<span class="en">OIDC</span> 是疊在它上面的一層，才真正回答「這個人是誰」，多給你一個含身分資訊的權杖。做登入用的是後者。</p>
+    </div>
+    <p class="so"><span>所以</span>這個流程的每一步都不能省。而它是典型的多步驟流程——<strong>登入頁渲染正常完全不代表流程走得完</strong>，必須實際點到底才算驗證過。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>權杖：任何人都讀得懂，只有持金鑰的人能簽</h4>
+    <p>常見的權杖格式（<span class="en">JWT</span>）長成三段，用點分開：<strong>標頭．內容．簽章</strong>。前兩段只是把 JSON 做了 Base64 編碼——<strong>Base64 是編碼，不是加密</strong>。任何拿到權杖的人都能直接讀出裡面的內容。</p>
+    <p>簽章的作用不是隱藏，是<strong>證明沒有被改過</strong>。伺服器用秘密金鑰簽，驗證時重算一次；內容被動過一個字，簽章就對不上。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>eyJhbGciOiJIUzI1NiJ9 . eyJzdWIiOiJ1MSIsImFkbWluIjpmYWxzZX0 . 4Rt2_kQ...
+└─── 標頭 ───────────┘ └─── 內容 ─────────────────────┘ └─ 簽章 ─┘
+
+# 中間那段解出來就是明文：
+{"sub": "u1", "admin": false}</pre>
+      <p>兩個直接推論：</p>
+      <p><strong>不要把秘密放進權杖內容。</strong>使用者自己看得到，也可以貼給任何人看。</p>
+      <p><strong>簽章金鑰洩漏等於任何人都能偽造任何身分。</strong>他可以自己簽一個「我是管理員」的權杖，而伺服器驗證會通過。這件事最可怕的地方是<strong>沒有任何跡象</strong>——沒有失敗的登入、沒有異常錯誤，每一次存取在系統眼中都完全合法。</p>
+    </div>
+    <p class="so"><span>所以</span>簽章金鑰要當成最高等級的秘密，並且定期輪替。這一類風險無法靠偵測發現，只能靠預防。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>加密做什麼、不做什麼</h4>
+    <p>傳輸加密（<span class="en">TLS</span>，也就是網址上的 https）做兩件事：<strong>把內容加密</strong>，讓路上的人看不到；以及<strong>驗證伺服器的身分</strong>，靠憑證確認你連到的真的是那個網域。</p>
+    <p>它<strong>不做</strong>的事同樣重要：它不驗證<strong>客戶端</strong>是誰（任何人都能發起一個加密連線），也不阻止任何人來敲門。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>所以一個對外開放的資料庫端口，即使全程加密，唯一的防線仍然是<strong>那組密碼</strong>：</p>
+      <pre>加密保證的：路上的人看不到你的密碼與資料
+加密不保證的：全世界都可以連到這個端口、不斷嘗試登入</pre>
+      <p>如果要連「客戶端是誰」也驗證，需要雙向驗證（<span class="en">mTLS</span>）——客戶端也要出示憑證。但更實際的做法通常是：<strong>先不要讓它暴露在公開網路上</strong>。</p>
+    </div>
+    <p class="so"><span>所以</span>「已經加密了」不能當成安全結論。要分開問三件事：路上會不會被看到、對方是不是真的它、誰能連進來。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">5</span>秘密的存放位置，以及「能輪替」這個要求</h4>
+    <p>秘密有幾個合理的存放位置，各有各的角色。挑錯位置的代價是洩漏：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw">
+        <table>
+          <thead><tr><th>位置</th><th>放什麼</th><th>進版控嗎</th></tr></thead>
+          <tbody>
+            <tr><td class="m">.env</td><td>本機開發用的實際金鑰</td><td><strong>不進</strong></td></tr>
+            <tr><td class="m">.env.example</td><td>只有欄位名稱與取得方式的說明</td><td>要進（讓別人知道要填什麼）</td></tr>
+            <tr><td>平台服務變數</td><td>正式環境的金鑰</td><td>不進（由平台注入）</td></tr>
+            <tr><td>工具自己的憑證管理</td><td>該工具要用的金鑰</td><td>不進</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>最後一項有個延伸：有些工具會刻意<strong>封鎖「從表達式讀環境變數」</strong>，因為那條路徑很容易讓秘密出現在日誌或匯出檔裡。這種限制要順著走，不要想辦法繞過。</p>
+      <p>還有一個常被忽略的要求：<strong>換一把金鑰必須是一個動作，不是一場考古。</strong>如果同一個值被複製到五個地方，輪替時你一定會漏掉一處，而漏掉的那一處會在幾天後以「某個東西突然連不上」的形式出現。這是引用式變數真正的價值。</p>
+    </div>
+    <p class="so"><span>所以</span>盤點秘密時，每一個都要能回答四件事：<strong>存在哪／誰能讀／洩漏了會發生什麼／怎麼輪替</strong>。第四欄答不出來的最多，而它代表：那把金鑰真的洩漏時，你沒有辦法應對。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">authentication vs authorization · OAuth 2.0 authorization code flow · PKCE · OpenID Connect · JWT signature · base64 is not encryption · session cookie HttpOnly Secure SameSite · TLS server authentication · mTLS · principle of least privilege · secret rotation</dd>
+      <dt>值得讀的東西</dt>
+      <dd><b>OAuth 2.0 Simplified</b>（作者 Aaron Parecki）——把流程講得比規格書清楚得多。安全的整體視野可以看 <b>OWASP Top 10</b>，它列的是實際最常被攻破的十類問題，讀完會知道自己該擔心什麼、不必擔心什麼。</dd>
+      <dt>動手方向</dt>
+      <dd>把某個權杖貼進解碼工具（或自己用 Base64 解開中間那段），看看裡面到底寫了什麼。這件事做過一次，就再也不會把敏感資訊放進權杖了。</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- ═══════════════ L9 ═══════════════ -->
+<article class="ch" id="l9">
+  <header class="ch-head">
+    <p class="ch-num">L9</p>
+    <h2>觀測與除錯</h2>
+    <p class="ch-sub">怎麼知道它壞了，以及壞了之後怎麼定位。</p>
+  </header>
+
+  <div class="why">
+    <h3>為什麼學</h3>
+    <p>前面八層的錯誤能不能被你看見，由這一層決定。沒有它，你的系統可能已經壞了兩個月而你不知道——因為畫面一切正常。</p>
+    <p>而它有一個特別的盲區：<strong>「什麼都沒發生」不會產生任何紀錄，也不會觸發任何告警。</strong>所以需要一個專門用來發現「沒發生」的機制，而這個機制最常被漏掉。</p>
+  </div>
+
+  <div class="what">
+    <h3>要學什麼</h3>
+    <ul class="topics">
+      <li><b>三根柱子</b>——日誌、指標、追蹤各回答什麼 <em>logs, metrics, traces</em></li>
+      <li><b>結構化日誌</b>——可查詢的紀錄 <em>structured logging</em></li>
+      <li><b>「沒發生」的盲區</b>——死人開關 <em>dead man's switch, freshness</em></li>
+      <li><b>告警設計</b>——去重與疲勞 <em>alert fatigue, deduplication</em></li>
+      <li><b>讀堆疊與二分定位</b>——找交界 <em>stack trace, bisection</em></li>
+    </ul>
+  </div>
+
+  <h3 class="core-head">核心觀念</h3>
+
+  <section class="idea">
+    <h4><span class="idx">1</span>三根柱子：各自回答不同的問題</h4>
+    <p>觀測（<span class="en">observability</span>）的常見分法是三種資料，它們不能互相取代，因為回答的問題不同：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw">
+        <table>
+          <thead><tr><th>柱子</th><th>是什麼</th><th>回答</th></tr></thead>
+          <tbody>
+            <tr><td><strong>日誌</strong><br><span class="en">logs</span></td><td>一件一件的事件紀錄</td><td>「那一次到底發生了什麼」</td></tr>
+            <tr><td><strong>指標</strong><br><span class="en">metrics</span></td><td>隨時間變化的數字</td><td>「現在正常嗎、趨勢在變壞嗎」</td></tr>
+            <tr><td><strong>追蹤</strong><br><span class="en">traces</span></td><td>一個請求走過的所有環節</td><td>「這三秒花在哪一段」</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>小系統不需要第三根（它是為了多服務串接而生的）。但<strong>前兩根都要有</strong>：只有日誌，你無法回答「這個月比上個月糟嗎」；只有指標，出事時你不知道那一次的細節。</p>
+      <p>最有價值的起點是<strong>單一健康指標</strong>：一個地方、一句查詢，回答「系統現在好不好」。沒有它，你只能靠感覺，而感覺會被「畫面正常」騙過去。</p>
+    </div>
+    <p class="so"><span>所以</span>先做兩件事：一張記錄每次執行結果的表，以及一句能判斷整體健康的查詢。這兩樣的成本很低，但它們是其他一切的基礎。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">2</span>日誌要能被查詢，所以要有結構</h4>
+    <p>「跑過了」這種日誌等於沒有日誌，因為影響 0 筆和影響 3000 筆都會顯示「跑過了」。一筆有用的執行紀錄要包含四件事：<strong>做了什麼、成功或失敗、影響幾筆、訊息是什麼</strong>。</p>
+    <p>而寫法要有結構（<span class="en">structured logging</span>）——用固定的鍵值而不是自由文字。因為<strong>只有結構化的日誌可以被篩選、統計、比較</strong>。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre># 沒有結構：只能用眼睛看
+更新完成，共 1 筆有問題
+
+# 有結構：可以查詢
+{"job":"daily_update","status":"FAIL","rows":248,"symbol":"2330",
+ "msg":"quote empty","ts":"2026-09-09T18:30:12+08:00"}
+
+# 於是這些問題都能回答：
+#   這個月失敗過幾次？
+#   哪一個標的最常出問題？
+#   平均處理筆數是不是在下降？</pre>
+      <p>時間戳一定要<strong>帶時區</strong>。少了時區的時間戳在跨系統比對時會產生幾小時的偏移，而那種偏移很難被發現。</p>
+    </div>
+    <p class="so"><span>所以</span>把執行紀錄設計成一張可以查詢的表，而不是一堆文字。這是低成本、高回報的一步——之後所有「這是什麼時候開始的」的問題，都靠它回答。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">3</span>「什麼都沒發生」是盲區，需要死人開關</h4>
+    <p>日誌與告警有一個共同的前提：<strong>要有事情發生，它們才會產出東西。</strong>於是「任務完全沒有執行」這個狀況，兩者都看不到——沒有錯誤日誌，因為沒有錯誤；沒有告警，因為沒有觸發條件。</p>
+    <p>發現「沒發生」只有一種辦法：<strong>主動去問「最新的東西是什麼時候的」。</strong>這種機制叫<strong>死人開關</strong>（<span class="en">dead man's switch</span>）——不是等壞消息來，而是「太久沒聽到好消息就當成壞消息」。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <pre>-- 資料新鮮度檢查：落後超過容忍天數就是異常
+SELECT symbol, MAX(date) AS latest,
+       CURRENT_DATE - MAX(date) AS days_behind
+FROM daily_prices
+GROUP BY symbol
+HAVING CURRENT_DATE - MAX(date) > 4;      -- 4 天，涵蓋週末與連假</pre>
+      <p>那個閾值是這個機制的重點。設成 1 天，每個週末都會誤報；<strong>而規律誤報的下場是被忽略，等於這條防線消失了</strong>，只留下一個讓你安心的假象。</p>
+      <p>閾值要按<strong>真實世界的節奏</strong>設，不是按直覺設。有週末的資料就要涵蓋週末，有連假的要涵蓋連假。</p>
+    </div>
+    <p class="so"><span>所以</span>每一個週期任務都要配一句新鮮度查詢，而且閾值要用真實節奏推算。這是唯一能發現靜默停擺的手段。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">4</span>告警設計：對症狀告警，並且去重</h4>
+    <p>兩個原則。第一，<strong>對症狀告警，不對原因告警</strong>：「資料超過四天沒更新」是症狀，「某個 API 回 500」是原因。原因有無限多種，症狀只有幾種；對症狀告警才不會漏掉你沒想到的原因。</p>
+    <p>第二，<strong>告警疲勞是一種失效模式，不是使用體驗問題</strong>。同一件事重複轟炸會讓人關掉通知，而那比沒有告警更糟——因為你以為自己有在被提醒。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>所以告警要去重，而<strong>去重鍵的設計是關鍵</strong>：它要包含所有「會讓這件事變成一件新事」的參數。</p>
+      <pre>去重鍵 = (標的, 日期, 級別, 門檻參數)
+
+# 少了「門檻參數」會發生什麼：
+#   你把門檻從 10% 調成 5%
+#   價格跌破新的那條線（這是新資訊，該通知）
+#   但系統認為「今天這個標的這個級別已經發過了」→ 抑制掉
+#   你收不到通知，而且以為系統在看著</pre>
+      <p>兩個方向的錯都要想到：<strong>太鬆</strong>會變成每五分鐘轟炸同一件事，一天幾十次；<strong>太緊</strong>會讓真正的新事件被誤判成重複。</p>
+    </div>
+    <p class="so"><span>所以</span>設計告警時把去重鍵明確寫下來，並逐項確認「這個參數改變了，還算同一件事嗎」。答案是「不算」的參數，就必須在鍵裡面。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">5</span>讀堆疊：找你的程式與函式庫的交界</h4>
+    <p>錯誤堆疊（<span class="en">stack trace</span>）是「出錯時，函式呼叫的層層路徑」。讀它有個前提要先搞清楚——<strong>不同語言的排列方向相反</strong>：</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <div class="tw mini">
+        <table>
+          <thead><tr><th>語言</th><th>最內層（出錯處）在</th></tr></thead>
+          <tbody>
+            <tr><td>Python</td><td><strong>最後一行</strong>（開頭那句 most recent call last 就是在講這件事）</td></tr>
+            <tr><td>Java / JavaScript</td><td><strong>最上面一行</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>真正的技巧是：<strong>找「你的程式」與「別人的程式」的交界</strong>。根因常常不在任何一層裡面，而在兩個函式庫的交界處——各自都按自己的規則正常運作，但兩者的假設互相衝突。你的那一行只是碰巧觸發了它。</p>
+      <pre>java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
+  at androidx.fragment.app.FragmentActivity.checkForValidRequestCode(...)   ← 函式庫 A：只接受 16 位元
+  at androidx.activity.ComponentActivity$...onLaunch(...)                   ← 函式庫 B：產生 32 位元
+  at com.example.ui.MainScreenKt.MainScreen(MainScreen.kt:463)              ← 你的程式：只是呼叫了它
+
+根因在 A 與 B 的交界，不在你那一行。盯著自己的程式看不出問題。</pre>
+    </div>
+    <p class="so"><span>所以</span>讀堆疊時先標出「哪幾行是我的」，再看緊鄰它的上下兩層。而<strong>最貴的反模式是「掩蓋」</strong>——為了讓它看起來能跑而包住那個錯誤。錯誤不會消失，只是失去了聲音，而那個聲音是你唯一免費得到的資訊。</p>
+  </section>
+
+  <section class="idea">
+    <h4><span class="idx">6</span>二分定位：不要從頭讀程式碼</h4>
+    <p>當你不知道問題在哪，最有效率的方法不是逐行閱讀，而是<strong>二分</strong>（<span class="en">bisection</span>）：把路徑切一半，確認中點是對的還是錯的，然後只往有問題的那一半找。每一次切半，範圍就少一半。</p>
+    <div class="eg">
+      <span class="eg-l">例</span>
+      <p>二分可以用在兩個維度上：</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>維度</th><th>做法</th></tr></thead>
+          <tbody>
+            <tr><td><strong>資料路徑</strong></td><td>從來源到畫面之間找中點（例如資料庫裡那筆值），確認在中點時資料是對的還是錯的 → 問題在中點之前或之後</td></tr>
+            <tr><td><strong>時間軸</strong></td><td>「上個月還好的」→ 在版控歷史裡二分，找出哪一次改動開始出錯（<code>git bisect</code> 就是做這件事的工具）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>還有一個讓定位變便宜的準備工作：<strong>把外部世界的各種樣貌存成固定樣本，讓邏輯可以離線重播</strong>（<span class="en">golden files / replay fixtures</span>）。有了它，你可以在任何時候重現任何一種狀況，不必等它再發生一次。</p>
+    </div>
+    <p class="so"><span>所以</span>遇到不明問題，先問「路徑的中點在哪、我怎麼看那個中點」。這比讀程式碼快一個數量級。而除錯記錄要以<strong>症狀</strong>開頭而不是原因——因為下次你遇到的是症狀。</p>
+  </section>
+
+  <div class="next">
+    <h3>延伸學習方向</h3>
+    <dl>
+      <dt>可以直接查的關鍵字</dt>
+      <dd class="kw">three pillars of observability · structured logging · dead man's switch · data freshness monitoring · golden signals · alert fatigue · symptom-based alerting · alert deduplication · stack trace reading · git bisect · golden file testing</dd>
+      <dt>值得讀的東西</dt>
+      <dd><b>Google SRE Book</b>（線上免費）的 <b>Monitoring Distributed Systems</b> 一章，「四個黃金訊號」與「對症狀告警」都出自這裡。另外 <b>Practical Monitoring</b>（作者 Mike Julian）比較適合小系統的規模。</dd>
+      <dt>動手方向</dt>
+      <dd>關掉某一個週期任務，然後只靠現有的觀測手段，看你多久之後會發現。如果答案是「永遠不會」，缺的就是新鮮度查詢；如果答案是「下次剛好去看的時候」，那也等於永遠不會。在還有人依賴的系統上先確認停一段時間不會造成不可逆的資料缺口。</dd>
+    </dl>
+  </div>
+</article>
+
+<div class="closing">
+  <h2>關於這份講義的邊界</h2>
+  <p><strong>它不教程式語言、語法與演算法。</strong>那是另一層的事，而且那一層錯了會立刻報錯——你會知道，也查得到。這份講義收的是另一種知識：<strong>不懂的時候不會報錯，只會安靜地產生錯的結果。</strong></p>
+  <p><strong>它也不教語法細節</strong>——觸發器怎麼寫、排程表達式的每一種變體、遞迴查詢怎麼組。這一層需要的是「該不該用它」的判斷，而那個判斷不需要語法。真的要寫的時候再查，或交給工具。</p>
+  <p><strong>兩個目前刻意排除、但條件變了就該補的題目。</strong>前端視覺與樣式：這類故障幾乎都是大聲失敗（畫面看得出來），也不影響資料正確性——但如果你的工作需要親自判斷介面設計，就該補。效能調校與索引優化：小規模系統碰不到那個門檻——但當資料量或使用者數成長到查詢開始變慢，就該補。</p>
+  <p><strong>讀完一層之後最有效的一步，是把那一層的「動手方向」真的做一次。</strong>這一層的知識有個特性：讀過會懂，但只有親手看過它壞掉一次才會變成直覺。</p>
+  <p style="margin-top:18px"><a class="top" href="#top">回到頂端 ↑</a></p>
+</div>
+
+</main>
+</div>
+</body>
+</html>
